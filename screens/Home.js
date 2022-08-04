@@ -1,9 +1,7 @@
 import {React, useState, useEffect} from "react";
 import axios from 'axios';
-import { SafeAreaView, ScrollView, StyleSheet, View, Text } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, View, Text, RefreshControl } from "react-native";
 import RecentPost from "../components/RecentPost";
-import TopBar from "../components/TopBar";
-import Reading from "./Reading";
 import ArticleCard from "../components/ArticleCards";
 
 function Home(){
@@ -25,8 +23,7 @@ function Home(){
       }
 
     return(
-        <SafeAreaView>
-                {/* <TopBar/> */}
+            <SafeAreaView >
                 <ScrollView >
                     <RecentPost />
                     <View style={style.articles}>
@@ -37,6 +34,7 @@ function Home(){
                         })}
                     </View>
                 </ScrollView>
+                
         </SafeAreaView>
     )
 }
@@ -47,6 +45,7 @@ const style = StyleSheet.create({
     },
     articles: {
         padding: 20,
+        backgroundColor: "#f0f0f0",
     }
 })
 

@@ -28,7 +28,7 @@ function RecentPost() {
         setData(response.data);
       })
       .catch((err) => {
-        console.log(err.response.data);
+        console.log('error');
       });
   }, []);
 
