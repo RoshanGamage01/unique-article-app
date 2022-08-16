@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
-import {View, SafeAreaView, ScrollView, TextInput, Text, Image, StyleSheet, TouchableOpacity, ImageBackground} from "react-native";
+import {View, SafeAreaView, ScrollView, TextInput, Text, Image, StyleSheet, TouchableOpacity, ImageBackground, Linking} from "react-native";
 import ArticleCard from "../components/ArticleCards";
 
 function Profile() {
@@ -15,7 +15,6 @@ function Profile() {
     me: { profileImage: "", title: "", firstName: "", lastName: ""},
     article: [],
   })
-
 
   const getProfileDetails = (token) => {
     axios.get("https://uniquearticle.azurewebsites.net/api/user/me", {
@@ -42,10 +41,10 @@ function Profile() {
     axios
       .post("https://uniquearticle.azurewebsites.net/api/login", data)
       .then((result) => {
-        SecureStore.setItemAsync("auth-token", result.data.token).then((t) => {
+            SecureStore.setItemAsync("auth-token", result.data.token).then(t => {
           console.log("login saved");
           setToken(t)
-          getProfileDetails(t)
+          t!==null ? getProfileDetails(t) : setToken(null)
         });
       })
       .catch((err) => {
@@ -58,6 +57,14 @@ function Profile() {
         .then(
             setToken(null)
         )
+  }
+
+  const btnDontHaveAccountOnAction = () => {
+    Linking.openURL("https://uniquearticle.netlify.app/register").catch(r => console.log(r))
+  }
+
+  const btnCreateNewArticleOnAction = () => {
+    Linking.openURL(`https://uniquearticle.netlify.app/article/new/${profileDetails.me._id}`).catch(r => console.log(r))
   }
 
   return (
@@ -113,6 +120,14 @@ function Profile() {
               <TouchableOpacity style={styles.btn} onPress={btnLogInOnAction}>
                 <Text style={{ color: "white", fontSize: 18, fontWeight: "600" }}> Log In </Text>
               </TouchableOpacity>
+              <View style={{flexDirection: "row", marginTop: 20}}>
+                <Text>Dont have a account ? </Text>
+                <TouchableOpacity onPress={btnDontHaveAccountOnAction}>
+                    <Text style={{color: "#0078d4"}}>
+                        Register
+                    </Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </ScrollView>
         </SafeAreaView>
@@ -132,7 +147,7 @@ function Profile() {
                     </TouchableOpacity>
                     <View style={profile_style.captions}>
                         <Text style={{fontSize: 15, fontWeight: "600"}}>My articles</Text>
-                        <TouchableOpacity style={profile_style.captions.btn}>
+                        <TouchableOpacity style={profile_style.captions.btn} onPress={btnCreateNewArticleOnAction}>
                             <Text style={{fontSize: 20}}>+</Text>
                             <Text style={{fontSize: 15}}> Create New Article</Text>
                         </TouchableOpacity>
