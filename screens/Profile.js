@@ -35,19 +35,20 @@ function Profile() {
       t!==null ? getProfileDetails(t) : null
     })
     .catch(err => console.log(err));
-  }, []);
+  }, [token]);
 
   const btnLogInOnAction = () => {
     axios
       .post("https://uniquearticle.azurewebsites.net/api/login", data)
-      .then((result) => {
-            SecureStore.setItemAsync("auth-token", result.data.token).then(t => {
-          console.log("login saved");
-          setToken(t)
-          t!==null ? getProfileDetails(t) : setToken(null)
-        });
+      .then((result) => {SecureStore.setItemAsync("auth-token", result.data.token)
+              .then(SecureStore.getItemAsync("auth-token")
+              .then(t => {
+                setToken(t)
+                t!==null ? getProfileDetails(t) : setToken(null)
+            }))
       })
       .catch((err) => {
+        console.log(err.response.data)
         setError(err.response.data);
       });
   };
